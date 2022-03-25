@@ -9,6 +9,8 @@ import { CreatePatientDto } from './interfaces/create-patient.dto';
 import { CreatePatient } from './commands/impl/create-patient.command';
 import { GetPatientsQuery } from './queries/impl/get-patients.query';
 import { Patient as PatientProjection } from './projections/patient.entity';
+import { ChangePatientNameDto } from './interfaces/change-patient-name.dto';
+import { ChangePatientName } from './commands/impl/change-patient-name.command';
 
 @Injectable()
 export class PatientsService {
@@ -27,6 +29,19 @@ export class PatientsService {
       await this.commandBus.execute(new CreatePatient(patientId, data));
       this.logger.log(`Create patient: ${patientId}`);
       return { message: 'success', status: 201, patientId, data };
+    } catch (err) {
+      this.logger.log(err);
+      this.logger.error(err.name, err.stack);
+      throw new BadRequestException(err);
+    }
+  }
+
+  async changePatientName(data: ChangePatientNameDto) {
+    try {
+      const { id, name } = data;
+      await this.commandBus.execute(new ChangePatientName(id, name));
+      this.logger.log(`Change patient name: ${id}, ${name}`);
+      return { message: 'success', status: 201, id, data };
     } catch (err) {
       this.logger.log(err);
       this.logger.error(err.name, err.stack);

@@ -34,4 +34,6 @@ export class PatientsResolver {
   ): Promise<PatientResponse> {
     return await this.patientService.createPatient(data);
   }
+
+  // TODO: Add changePatientName mutation
 }

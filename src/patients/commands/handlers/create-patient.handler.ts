@@ -3,17 +3,13 @@ import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 import { Logger } from '@nestjs/common';
 
 import { Patient } from '../../aggregate/patient.aggregate';
-import { PatientsRepository } from '../../repository/patients.repository';
 import { CreatePatient } from '../impl/create-patient.command';
 
 @CommandHandler(CreatePatient)
 export class CreatePatientHandler implements ICommandHandler<CreatePatient> {
   private readonly logger = new Logger(CreatePatientHandler.name);
 
-  constructor(
-    private readonly repository: PatientsRepository,
-    private publisher: StoreEventPublisher,
-  ) {}
+  constructor(private publisher: StoreEventPublisher) {}
 
   async execute(command: CreatePatient) {
     this.logger.log(`CreatePatient...`);

@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Put,
   Body,
   Logger,
   Get,
@@ -10,6 +11,7 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './interfaces/create-patient.dto';
+import { ChangePatientNameDto } from './interfaces/change-patient-name.dto';
 
 @Controller('patients')
 @ApiTags('Patients')
@@ -25,6 +27,15 @@ export class PatientsController {
     data: CreatePatientDto,
   ) {
     return await this.patientService.createPatient(data);
+  }
+
+  @ApiResponse({ status: 201, description: 'Patient name changed' })
+  @Put('change-name')
+  async changePatientName(
+    @Body()
+    data: ChangePatientNameDto,
+  ) {
+    return await this.patientService.changePatientName(data);
   }
 
   @ApiResponse({ status: 200, description: 'Get all patients' })
