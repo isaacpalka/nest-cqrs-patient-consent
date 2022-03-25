@@ -17,13 +17,29 @@ export class PatientsRepository {
   private logger = new Logger(PatientsRepository.name);
 
   async findOneById(id: string): Promise<Patient> {
-    this.logger.error('findOneById');
+    this.logger.log('findOneById: ', id);
+
+    // Even if id has no previous events, we still load an aggregate
+    // with that ID
     const patient = new Patient(id);
-    const { events } = await this.eventStore.getEvents(
-      this.eventBus.streamPrefix,
-      id,
-    );
-    patient.loadFromHistory(events);
+
+    try {
+      this.logger.debug('Try to get events...');
+      const { events } = await this.eventStore.getEvents(
+        this.eventBus.streamPrefix,
+        id,
+      );
+      patient.loadFromHistory(events);
+    } catch (err) {
+      this.logger.error(err.name, err.stack);
+    }
+
+    // If getEvents() throws an error, and the catch block is called,
+    // the patient aggregate simply will have no events to load,
+    // but we still return the aggregate object. The aggregate code
+    // or command handler can do validation checks to determine
+    // whether to throw an error, or dispatch an event.
+    this.logger.error('Before return...');
     return patient;
   }
 
