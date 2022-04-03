@@ -3,16 +3,16 @@ version: '3.4'
 services:
   projections.db:
     container_name: patient-consent-projections
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
+    image: postgres
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${PROJECTIONS_CREDENTIALS_PASSWORD}
-      MYSQL_DATABASE: ${PROJECTIONS_DATABASE}
+      - POSTGRES_USER=${PROJECTIONS_CREDENTIALS_USERNAME}
+      - POSTGRES_PASSWORD=${PROJECTIONS_CREDENTIALS_PASSWORD}
+      - POSTGRES_DB=${PROJECTIONS_DATABASE}
     networks:
       - backend
     ports:
-      - ${PROJECTIONS_PORT}:3306
+      - '${PROJECTIONS_PORT}:5432'
     volumes:
       - type: volume
         source: projections-volume-data

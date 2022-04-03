@@ -22,7 +22,7 @@ export class PatientNameChangedUpdater
 
   async handle(event: PatientNameChanged) {
     await this.projectionRepository.save({
-      patientId: event.id,
+      patient_id: event.id,
       name: event.name,
     });
   }

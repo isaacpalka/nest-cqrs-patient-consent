@@ -45,7 +45,7 @@ export class PatientsRepository {
 
   async findAll(): Promise<PatientProjection[]> {
     const patients = await this.projectionRepository.find({
-      order: { dateCreated: 'DESC' },
+      order: { date_created: 'DESC' },
     });
     return patients;
   }
