@@ -1,5 +1,6 @@
 import { PatientCreated } from './patient-created.event';
 import { PatientNameChanged } from './patient-name-changed.event';
+import { ConsentGranted } from './consent-granted.event';
 
 // What does this do?
 export const EventSerializers = {
@@ -8,5 +9,8 @@ export const EventSerializers = {
   },
   PatientNameChanged: ({ id, name, dateModified }) => {
     return new PatientNameChanged(id, name, dateModified);
+  },
+  ConsentGranted: ({ id, to_id, to_entity, target }) => {
+    return new ConsentGranted(id, to_id, to_entity, target);
   },
 };

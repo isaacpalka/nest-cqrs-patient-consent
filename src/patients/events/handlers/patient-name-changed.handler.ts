@@ -14,9 +14,8 @@ export class PatientNameChangedHandler
   async handle(event: PatientNameChanged) {
     try {
       await this.viewUpdater.handle(event);
-      // send websocket
     } catch (err) {
-      this.logger.error(`cant save to projection: ${err}`);
+      this.logger.error(`Error handling event: ${err}`);
     }
   }
 }
