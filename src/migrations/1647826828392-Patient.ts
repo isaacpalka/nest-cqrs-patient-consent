@@ -5,11 +5,11 @@ export class Patient1647826828392 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE \`patients\` (\`patient_id\` varchar(255) NOT NULL, \`name\` varchar(255) NOT NULL, \`date_created\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (\`patient_id\`)) ENGINE=InnoDB`,
+      `CREATE TABLE "patients" ("patient_id" character varying NOT NULL, "name" character varying NOT NULL, "date_created" TIMESTAMP NOT NULL DEFAULT now(), PRIMARY KEY ("patient_id"))`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE \`patients\``);
+    await queryRunner.query(`DROP TABLE "patients"`);
   }
 }

@@ -1,6 +1,6 @@
 ### BASE
 FROM node:lts-alpine3.10 AS base
-LABEL maintainer "Peter van Dijk <petervandijk@gmail.com>"
+
 # Set the working directory
 WORKDIR /app
 # Copy project specification and dependencies lock files
