@@ -21,7 +21,7 @@ export class PatientCreatedUpdater implements IViewUpdater<PatientCreated> {
   async handle(event: PatientCreated) {
     const patient = this.projectionRepository.create({
       ...event,
-      patientId: event.id,
+      patient_id: event.id,
       name: event.name,
     });
 

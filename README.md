@@ -24,10 +24,10 @@ EVENTSTORE_ENABLE_EXTERNAL_TCP=true
 EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
 EVENTSTORE_HOSTNAME=eventstore.db
 PROJECTIONS_HOSTNAME=projections.db
-PROJECTIONS_PORT=3306
+PROJECTIONS_PORT=5432
 PROJECTIONS_CREDENTIALS_USERNAME=root
 PROJECTIONS_CREDENTIALS_PASSWORD=example
-PROJECTIONS_DB_TYPE=mysql
+PROJECTIONS_DB_TYPE=postgres
 PROJECTIONS_DATABASE=patient-consent-projections
 STORE_STATE_HOSTNAME=eventstore.db
 STORE_STATE_PORT=27017
@@ -56,7 +56,7 @@ To run manually:
 $ docker-compose exec patient-consent yarn run migration:run
 
 # After adding model(s) or make changes to models, generate new migration:
-$ docker-compose exec patient-consent yarn run migration:generate -- [migration-name]
+$ docker-compose exec patient-consent yarn run migration:generate <migration-name>
 ```
 
 ```bash
