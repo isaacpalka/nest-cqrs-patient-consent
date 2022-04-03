@@ -12,6 +12,7 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './interfaces/create-patient.dto';
 import { ChangePatientNameDto } from './interfaces/change-patient-name.dto';
+import { GrantConsentDto } from './interfaces/grant-consent.dto';
 
 @Controller('patients')
 @ApiTags('Patients')
@@ -36,6 +37,15 @@ export class PatientsController {
     data: ChangePatientNameDto,
   ) {
     return await this.patientService.changePatientName(data);
+  }
+
+  @ApiResponse({ status: 201, description: 'Grant consent' })
+  @Put('grant-consent')
+  async grantConsent(
+    @Body()
+    data: GrantConsentDto,
+  ) {
+    return await this.patientService.grantConsent(data);
   }
 
   @ApiResponse({ status: 200, description: 'Get all patients' })

@@ -12,7 +12,7 @@ import { StateUpdaters } from './events/updaters';
 import { QueryHandlers } from './queries/handlers';
 
 import { PatientsResolver } from './patients.resolver';
-import { Patient as PatientProjection } from './projections/patient.entity';
+import { Projections } from './projections/';
 import { EventSerializers } from './events/impl/EventSerializers';
 
 const STREAM_PREFIX = 'patient';
@@ -24,7 +24,7 @@ const STREAM_PREFIX = 'patient';
       streamPrefix: STREAM_PREFIX,
       eventSerializers: EventSerializers, // What does this do?
     }),
-    TypeOrmModule.forFeature([PatientProjection]),
+    TypeOrmModule.forFeature(Projections),
   ],
   exports: [TypeOrmModule],
   controllers: [PatientsController],

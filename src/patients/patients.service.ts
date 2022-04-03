@@ -11,6 +11,8 @@ import { GetPatientsQuery } from './queries/impl/get-patients.query';
 import { Patient as PatientProjection } from './projections/patient.entity';
 import { ChangePatientNameDto } from './interfaces/change-patient-name.dto';
 import { ChangePatientName } from './commands/impl/change-patient-name.command';
+import { GrantConsentDto } from './interfaces/grant-consent.dto';
+import { GrantConsent } from './commands/impl/grant-consent.command';
 
 @Injectable()
 export class PatientsService {
@@ -46,6 +48,21 @@ export class PatientsService {
       this.logger.log(err);
       this.logger.error(err.name, err.stack);
       throw new BadRequestException(err);
+    }
+  }
+
+  async grantConsent(data: GrantConsentDto) {
+    try {
+      const { id, to_id, to_entity, target } = data;
+      await this.commandBus.execute(
+        new GrantConsent(id, to_id, to_entity, target),
+      );
+      this.logger.log(`Grant consent: ${id}`);
+      return { message: 'success', status: 201, id, data };
+    } catch (err) {
+      this.logger.log(err);
+      this.logger.error(err.name, err.stack);
+      throw new BadRequestException(err.message);
     }
   }
 
