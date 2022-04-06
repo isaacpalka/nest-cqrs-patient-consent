@@ -13,6 +13,9 @@ import { ChangePatientNameDto } from './interfaces/change-patient-name.dto';
 import { ChangePatientName } from './commands/impl/change-patient-name.command';
 import { GrantConsentDto } from './interfaces/grant-consent.dto';
 import { GrantConsent } from './commands/impl/grant-consent.command';
+import { GetConsentsDto } from './interfaces/get-consents.dto';
+import { GetPatientConsentsQuery } from './queries/impl/get-patient-consents.query';
+import { PatientConsentsDto } from './interfaces/patient-consents.dto';
 
 @Injectable()
 export class PatientsService {
@@ -69,6 +72,14 @@ export class PatientsService {
   async getAllPatients(): Promise<PatientProjection[]> {
     this.logger.log('getAllPatients');
     const patients = await this.queryBus.execute(new GetPatientsQuery());
+    return patients;
+  }
+
+  async getConsents(data: GetConsentsDto): Promise<PatientConsentsDto[]> {
+    this.logger.log('getConsents');
+    const patients = await this.queryBus.execute(
+      new GetPatientConsentsQuery(data),
+    );
     return patients;
   }
 }

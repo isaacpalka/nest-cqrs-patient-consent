@@ -85,3 +85,10 @@ $ npm run test:cov
 ## Credits
 
 This project heavily borrows from `@peterDijk`'s [Hangman](https://github.com/peterDijk/hangman-ddd-events) sample project, which utilizes the [NestJS Event Sourcing](https://github.com/peterDijk/nestjs-eventstoredb) package.
+
+## Todo List
+
+[] Implement Revoke Consent
+[] Implement Ask Consent
+[] Catch up GraphQL APIs to match REST APIs
+[] Tests

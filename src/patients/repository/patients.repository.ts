@@ -24,7 +24,6 @@ export class PatientsRepository {
     const patient = new Patient(id);
 
     try {
-      this.logger.debug('Try to get events...');
       const { events } = await this.eventStore.getEvents(
         this.eventBus.streamPrefix,
         id,
@@ -39,7 +38,6 @@ export class PatientsRepository {
     // but we still return the aggregate object. The aggregate code
     // or command handler can do validation checks to determine
     // whether to throw an error, or dispatch an event.
-    this.logger.error('Before return...');
     return patient;
   }
 

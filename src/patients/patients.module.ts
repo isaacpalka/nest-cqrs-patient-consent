@@ -5,14 +5,14 @@ import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
 
 import { PatientsController } from './patients.controller';
 import { PatientsService } from './patients.service';
-import { PatientsRepository } from './repository/patients.repository';
+import { Repositories } from './repository';
 import { CommandHandlers } from './commands/handlers';
 import { EventHandlers } from './events/handlers';
 import { StateUpdaters } from './events/updaters';
 import { QueryHandlers } from './queries/handlers';
 
 import { PatientsResolver } from './patients.resolver';
-import { Projections } from './projections/';
+import { Projections } from './projections';
 import { EventSerializers } from './events/impl/EventSerializers';
 
 const STREAM_PREFIX = 'patient';
@@ -31,7 +31,7 @@ const STREAM_PREFIX = 'patient';
   providers: [
     PatientsResolver,
     PatientsService,
-    PatientsRepository,
+    ...Repositories,
     ...CommandHandlers,
     ...EventHandlers,
     ...StateUpdaters,
