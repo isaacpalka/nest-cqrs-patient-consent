@@ -5,7 +5,7 @@ import {
   Body,
   Logger,
   Get,
-  //  Param
+  Param,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
@@ -13,7 +13,6 @@ import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './interfaces/create-patient.dto';
 import { ChangePatientNameDto } from './interfaces/change-patient-name.dto';
 import { GrantConsentDto } from './interfaces/grant-consent.dto';
-
 @Controller('patients')
 @ApiTags('Patients')
 export class PatientsController {
@@ -52,5 +51,12 @@ export class PatientsController {
   @Get()
   async getAllPatients() {
     return await this.patientService.getAllPatients();
+  }
+
+  @ApiResponse({ status: 200, description: 'Get patient consents' })
+  @Get(':id/consents/:entity_id')
+  async getConsents(@Param() params) {
+    const { id, entity_id } = params;
+    return await this.patientService.getConsents({ id, entity_id });
   }
 }
