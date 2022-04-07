@@ -10,13 +10,16 @@ import {
   IsUUID,
 } from 'class-validator';
 
-import { PatientCreated } from '../events/impl/patient-created.event';
-import { InvalidCommandException } from '../exceptions';
-import { CreatePatientDto } from '../interfaces/create-patient.dto';
-import { PatientNameChanged } from '../events/impl/patient-name-changed.event';
 import { ActorType, ConsentMap, HealthRecordType } from './patient-types';
+import { InvalidCommandException } from '../exceptions';
+
 import { GrantConsent } from '../commands/impl/grant-consent.command';
+import { RevokeConsent } from '../commands/impl/revoke-consent.command';
+
+import { PatientCreated } from '../events/impl/patient-created.event';
+import { PatientNameChanged } from '../events/impl/patient-name-changed.event';
 import { ConsentGranted } from '../events/impl/consent-granted.event';
+import { ConsentRevoked } from '../events/impl/consent-revoked.event';
 
 @ObjectType()
 export class Patient extends AggregateRoot {
@@ -73,27 +76,26 @@ export class Patient extends AggregateRoot {
     entityType: ActorType,
     entityId: string,
     target: HealthRecordType,
-  ): ConsentMap {
+    operation: 'add' | 'remove',
+  ): void {
     const key = this.getConsentKey(entityType, entityId);
 
-    // FIXME: Check if has consent here??? Or turn map into Set?
-    // Generate updated consents for this given key
-    // const consentsToUpdate = this.consents[key] || new Set();
-    const updatedConsents = new Set(this.consents[key]).add(target);
-    // Return updated consents map with updates for the given key
-    return {
-      ...this.consents,
-      [key]: updatedConsents,
-    };
+    const updatedConsents = new Set(this.consents[key]);
+    if (operation === 'add') {
+      updatedConsents.add(target);
+    } else if (operation === 'remove') {
+      updatedConsents.delete(target);
+    }
+    this.consents[key] = updatedConsents;
   }
 
-  async createPatient(data: CreatePatientDto) {
+  async createPatient(name: string) {
     try {
       // Does this need to be async with await? Can this entire method be made sync?
       // await validateOrReject(this); // Should you validate "this", or data (the DTO)?
 
       this.apply(
-        new PatientCreated(this.id, data.name, new Date(), new Date()),
+        new PatientCreated(this.id, name, new Date(), new Date()),
         false,
       );
     } catch (err) {
@@ -137,6 +139,30 @@ export class Patient extends AggregateRoot {
     }
   }
 
+  async revokeConsent(command: RevokeConsent) {
+    try {
+      this.validateAggregateExists();
+      const { patient_id, from_id, from_entity, target } = command;
+
+      if (
+        !this.hasConsent(
+          from_entity as ActorType,
+          from_id,
+          target as HealthRecordType,
+        )
+      ) {
+        throw new InvalidCommandException('Consent not granted');
+      }
+
+      this.apply(
+        new ConsentRevoked(patient_id, from_id, from_entity, target),
+        false,
+      );
+    } catch (err) {
+      throw new InvalidCommandException(err.message);
+    }
+  }
+
   // Replay event from history `loadFromHistory` function calls
   // onNameOfEvent
   // framework magic
@@ -152,11 +178,20 @@ export class Patient extends AggregateRoot {
   }
 
   onConsentGranted(event: ConsentGranted) {
-    const newc = this.updateConsent(
+    this.updateConsent(
       event.to_entity as ActorType,
       event.to_id,
       event.target as HealthRecordType,
+      'add',
     );
-    this.consents = newc;
+  }
+
+  onConsentRevoked(event: ConsentRevoked) {
+    this.updateConsent(
+      event.from_entity as ActorType,
+      event.from_id,
+      event.target as HealthRecordType,
+      'remove',
+    );
   }
 }

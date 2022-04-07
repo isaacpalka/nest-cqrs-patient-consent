@@ -88,7 +88,8 @@ This project heavily borrows from `@peterDijk`'s [Hangman](https://github.com/pe
 
 ## Todo List
 
-[] Implement Revoke Consent
-[] Implement Ask Consent
+[X] Implement Revoke Consent
+[] Implement a saga?
+[] Implement Ask Consent?
 [] Catch up GraphQL APIs to match REST APIs
 [] Tests

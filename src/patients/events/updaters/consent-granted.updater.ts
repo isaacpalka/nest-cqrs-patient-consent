@@ -19,20 +19,19 @@ export class ConsentGrantedUpdater implements IViewUpdater<ConsentGranted> {
   private logger = new Logger(ConsentGrantedUpdater.name);
 
   async handle(event: ConsentGranted) {
+    const { id, to_id, target } = event;
+
     const consent = await this.projectionRepository.findOne({
-      where: { patient_id: event.id, entity_id: event.to_id },
+      where: { patient_id: id, entity_id: to_id },
     });
-    if (!consent) {
+    const permissions = consent?.permissions || [];
+
+    // Ensure that the target isn't added twice
+    if (!permissions.includes(target)) {
       await this.projectionRepository.save({
-        patient_id: event.id,
-        entity_id: event.to_id,
-        permissions: [event.target],
-      });
-    } else if (!consent.permissions.includes(event.target)) {
-      await this.projectionRepository.save({
-        patient_id: event.id,
-        entity_id: event.to_id,
-        permissions: [...consent.permissions, event.target],
+        patient_id: id,
+        entity_id: to_id,
+        permissions: [...permissions, target],
       });
     }
   }

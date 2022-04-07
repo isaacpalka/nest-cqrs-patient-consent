@@ -13,11 +13,14 @@ export class CreatePatientHandler implements ICommandHandler<CreatePatient> {
 
   async execute(command: CreatePatient) {
     this.logger.log(`CreatePatient...`);
-    const { uuid, data } = command;
+    const {
+      uuid,
+      data: { name },
+    } = command;
 
     const PatientModel = this.publisher.mergeClassContext(Patient);
     const patient = new PatientModel(uuid);
-    await patient.createPatient(data);
+    await patient.createPatient(name);
 
     patient.commit();
   }

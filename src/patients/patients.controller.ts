@@ -13,6 +13,8 @@ import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './interfaces/create-patient.dto';
 import { ChangePatientNameDto } from './interfaces/change-patient-name.dto';
 import { GrantConsentDto } from './interfaces/grant-consent.dto';
+import { RevokeConsentDto } from './interfaces/revoke-consent.dto';
+
 @Controller('patients')
 @ApiTags('Patients')
 export class PatientsController {
@@ -45,6 +47,15 @@ export class PatientsController {
     data: GrantConsentDto,
   ) {
     return await this.patientService.grantConsent(data);
+  }
+
+  @ApiResponse({ status: 201, description: 'Revoke consent' })
+  @Put('revoke-consent')
+  async revokeConsent(
+    @Body()
+    data: RevokeConsentDto,
+  ) {
+    return await this.patientService.revokeConsent(data);
   }
 
   @ApiResponse({ status: 200, description: 'Get all patients' })
